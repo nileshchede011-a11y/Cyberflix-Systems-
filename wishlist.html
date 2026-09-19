@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist | Cyberflix Systems LLP</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .wishlist-page {
+            padding: 70px 5%;
+            min-height: 65vh;
+        }
+
+        .wishlist-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .wishlist-header h1 {
+            font-size: clamp(34px, 5vw, 58px);
+            margin-bottom: 10px;
+        }
+
+        .wishlist-header p {
+            color: #888;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .wishlist-card {
+            background: #111;
+            border: 1px solid #242424;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: .25s ease;
+        }
+
+        .wishlist-card:hover {
+            transform: translateY(-5px);
+            border-color: #08B5D9;
+            box-shadow: 0 12px 35px rgba(8,181,217,.12);
+        }
+
+        .wishlist-image {
+            height: 210px;
+            background: #0b0b0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .wishlist-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .wishlist-info {
+            padding: 20px;
+        }
+
+        .wishlist-category {
+            color: #08B5D9;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .wishlist-info h3 {
+            font-size: 18px;
+            margin: 0 0 12px;
+        }
+
+        .wishlist-price {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .wishlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .wishlist-actions button {
+            flex: 1;
+            padding: 11px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            border: 1px solid #08B5D9;
+            background: #08B5D9;
+            color: #000;
+        }
+
+        .wishlist-actions .remove-btn {
+            background: transparent;
+            color: #08B5D9;
+        }
+
+        .wishlist-empty {
+            text-align: center;
+            padding: 80px 20px;
+            border: 1px dashed #333;
+            border-radius: 14px;
+        }
+
+        .wishlist-empty-icon {
+            font-size: 55px;
+            color: #08B5D9;
+            margin-bottom: 15px;
+        }
+
+        .wishlist-empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .wishlist-empty p {
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .wishlist-empty a {
+            display: inline-block;
+            background: #08B5D9;
+            color: #000;
+            padding: 13px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .wishlist-message {
+            text-align: center;
+            padding: 20px;
+            color: #08B5D9;
+        }
+
+        @media (max-width: 1100px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 800px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .wishlist-page {
+                padding: 45px 20px;
+            }
+
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wishlist-image {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP STRIP -->
+    <div class="top-strip">
+        EVERY CYBERFLIX PC IS PERFORMANCE-TESTED BEFORE DISPATCH
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="navbar cyber-nav">
+
+        <a class="logo" href="index.html" aria-label="Cyberflix Systems home">
+            <span>CYBER</span>FLIX
+            <small>SYSTEMS LLP</small>
+        </a>
+
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="components.html">Components</a>
+            <a href="builder.html">PC Builder</a>
+            <a href="builder.html">Custom Builds</a>
+            <a href="index.html#why">Why Cyberflix</a>
+        </nav>
+
+        <div class="nav-actions">
+
+            <a class="nav-search"
+               href="components.html"
+               aria-label="Shop components">
+                ⌕
+            </a>
+
+            <a class="nav-cart"
+               href="cart.html"
+               aria-label="Cart">
+                🛒
+                <span id="cartCount">0</span>
+            </a>
+
+            <a class="nav-quote"
+               href="builder.html">
+                GET A QUOTE <span>→</span>
+            </a>
+
+            <button class="nav-menu"
+                    type="button"
+                    aria-label="Open menu">
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- WISHLIST -->
+    <main class="wishlist-page">
+
+        <div class="wishlist-header">
+            <h1>MY <span style="color:#08B5D9;">WISHLIST</span></h1>
+
+            <p>
+                Your saved Cyberflix components and products
+            </p>
+        </div>
+
+        <div id="wishlistMessage"
+             class="wishlist-message">
+            Loading wishlist...
+        </div>
+
+        <div id="wishlistContent"></div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-grid">
+
+            <div>
+                <a class="logo footer-logo"
+                   href="index.html">
+                    <span>CYBER</span>FLIX
+                    <small>SYSTEMS LLP</small>
+                </a>
+
+                <p>
+                    Performance-focused PC components,
+                    custom builds and reliable hardware solutions.
+                </p>
+            </div>
+
+            <div>
+                <h4>SHOP</h4>
+
+                <a href="components.html">Components</a>
+                <a href="builder.html">PC Builder</a>
+                <a href="cart.html">Cart</a>
+                <a href="wishlist.html">Wishlist</a>
+            </div>
+
+            <div>
+                <h4>COMPANY</h4>
+
+                <a href="index.html#why">Why Cyberflix</a>
+                <a href="login.html">Login</a>
+                <a href="index.html">Home</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 Cyberflix Systems LLP. All rights reserved.
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+    <script>
+        const wishlistContent =
+            document.getElementById("wishlistContent");
+
+        const wishlistMessage =
+            document.getElementById("wishlistMessage");
+
+        const cartCount =
+            document.getElementById("cartCount");
+
+
+        function formatPrice(price) {
+            return "₹" + Number(price).toLocaleString("en-IN");
+        }
+
+
+        function escapeHTML(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        async function getWishlist() {
+
+            try {
+
+                const response = await fetch(
+                    "/api/wishlist",
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+                if (response.status === 401) {
+
+                    window.location.href = "login.html";
+                    return null;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Wishlist request failed");
+                }
+
+                const data = await response.json();
+
+                return data.wishlist || [];
+
+            } catch (error) {
+
+                console.error(error);
+
+                wishlistMessage.textContent =
+                    "Unable to load wishlist.";
+
+                return null;
+            }
+        }
+
+
+        async function getProducts() {
+
+            try {
+
+                const response = await fetch(
+                    "/api/products",
+                    {
+                        method: "GET"
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Products request failed");
+                }
+
+                const data = await response.json();
+
+                return data.products || data || [];
+
+            } catch (error) {
+
+                console.error(error);
+
+                return [];
+            }
+        }
+
+
+        async function loadWishlist() {
+
+            wishlistMessage.textContent =
+                "Loading wishlist...";
+
+            const wishlist = await getWishlist();
+
+            if (wishlist === null) {
+                return;
+            }
+
+            const products = await getProducts();
+
+            const wishlistIds = wishlist.map(item =>
+                String(
+                    item.product_id ??
+                    item.productId ??
+                    item.id
+                )
+            );
+
+            const savedProducts = products.filter(product =>
+                wishlistIds.includes(String(product.id))
+            );
+
+
+            if (savedProducts.length === 0) {
+
+                wishlistMessage.textContent = "";
+
+                wishlistContent.innerHTML = `
+                    <div class="wishlist-empty">
+
+                        <div class="wishlist-empty-icon">
+                            ♡
+                        </div>
+
+                        <h2>Your Wishlist is Empty</h2>
+
+                        <p>
+                            Save your favourite Cyberflix products
+                            and access them here anytime.
+                        </p>
+
+                        <a href="components.html">
+                            BROWSE COMPONENTS →
+                        </a>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            wishlistMessage.textContent =
+                `${savedProducts.length} saved product${savedProducts.length > 1 ? "s" : ""}`;
+
+
+            wishlistContent.innerHTML = `
+                <div class="wishlist-grid">
+
+                    ${savedProducts.map(product => `
+
+                        <article class="wishlist-card">
+
+                            <div class="wishlist-image">
+
+                                <img
+                                    src="${escapeHTML(product.image || "")}"
+                                    alt="${escapeHTML(product.name)}"
+                                    loading="lazy"
+                                >
+
+                            </div>
+
+                            <div class="wishlist-info">
+
+                                <div class="wishlist-category">
+                                    ${escapeHTML(product.category || "Component")}
+                                </div>
+
+                                <h3>
+                                    ${escapeHTML(product.name)}
+                                </h3>
+
+                                <div class="wishlist-price">
+                                    ${formatPrice(product.price)}
+                                </div>
+
+                                <div class="wishlist-actions">
+
+                                    <button
+                                        type="button"
+                                        onclick="addToCart(${Number(product.id)})">
+                                        ADD TO CART
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="remove-btn"
+                                        onclick="removeFromWishlist(${Number(product.id)})">
+                                        REMOVE
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    `).join("")}
+
+                </div>
+            `;
+        }
+
+
+        async function removeFromWishlist(productId) {
+
+            try {
+
+                const response = await fetch(
+                    "/api/wishlist",
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            productId: productId
+                        })
+                    }
+                );
+
+                if (response.status === 401) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Remove failed");
+                }
+
+                await loadWishlist();
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to remove product from wishlist."
+                );
+            }
+        }
+
+
+        async function addToCart(productId) {
+
+            const products = await getProducts();
+
+            const product = products.find(
+                item => Number(item.id) === Number(productId)
+            );
+
+            if (!product) {
+                alert("Product not found.");
+                return;
+            }
+
+
+            let cart = [];
+
+            try {
+
+                cart = JSON.parse(
+                    localStorage.getItem("cyberflixCart") || "[]"
+                );
+
+                if (!Array.isArray(cart)) {
+                    cart = [];
+                }
+
+            } catch {
+
+                cart = [];
+            }
+
+
+            const existing = cart.find(
+                item => Number(item.id) === Number(product.id)
+            );
+
+
+            if (existing) {
+
+                existing.quantity =
+                    Number(existing.quantity || 1) + 1;
+
+            } else {
+
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+
+            }
+
+
+            localStorage.setItem(
+                "cyberflixCart",
+                JSON.stringify(cart)
+            );
+
+
+            updateCartCount();
+
+            alert(
+                `${product.name} added to cart.`
+            );
+        }
+
+
+        function updateCartCount() {
+
+            let count = 0;
+
+            try {
+
+                const cart = JSON.parse(
+                    localStorage.getItem("cyberflixCart") || "[]"
+                );
+
+                if (Array.isArray(cart)) {
+
+                    count = cart.reduce(
+                        (total, item) =>
+                            total + Number(item.quantity || 1),
+                        0
+                    );
+
+                }
+
+            } catch {
+
+                count = 0;
+            }
+
+
+            cartCount.textContent = count;
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                loadWishlist();
+                updateCartCount();
+
+            }
+        );
+
+
+        window.addEventListener(
+            "pageshow",
+            () => {
+
+                loadWishlist();
+                updateCartCount();
+
+            }
+        );
+    </script>
+
+</body>
+</html>
