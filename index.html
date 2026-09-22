@@ -175,51 +175,47 @@
          NAVBAR
     ===================================================== -->
 
-    <header class="navbar cyber-nav">
+   <header class="navbar cyber-nav">
+
+    <a
+        class="logo"
+        href="index.html"
+        aria-label="Cyberflix Systems home"
+    >
+        <img
+            src="assets/cyberflix-logo.png"
+            alt="Cyberflix Systems LLP"
+        >
+    </a>
+
+    <nav class="main-nav">
 
         <a
-            class="logo"
+            class="active"
             href="index.html"
-            aria-label="Cyberflix Systems home"
         >
-
-            <span>
-                CYBER
-            </span>FLIX
-
-            <small>
-                SYSTEMS LLP
-            </small>
-
+            Home
         </a>
 
+        <a href="components.html">
+            Components
+        </a>
 
-        <nav class="main-nav">
+        <a href="builder.html">
+            PC Builder
+        </a>
 
-            <a
-                class="active"
-                href="index.html"
-            >
-                Home
-            </a>
+        <a href="#custom-pcs">
+            Custom Builds
+        </a>
 
-            <a href="components.html">
-                Components
-            </a>
+        <a href="#why">
+            Why Cyberflix
+        </a>
 
-            <a href="builder.html">
-                PC Builder
-            </a>
+    </nav>
 
-            <a href="#custom-pcs">
-                Custom Builds
-            </a>
-
-            <a href="#why">
-                Why Cyberflix
-            </a>
-
-        </nav>
+    <!-- बाकीचा तुझा nav-actions code इथेच ठेव -->
 
 
         <!-- =================================================
@@ -1332,6 +1328,77 @@
 
     </script>
 
+
+
+
+/* =====================================================
+   CYBERFLIX OFFICIAL LOGO — NAVBAR
+===================================================== */
+
+@media (min-width: 1001px) {
+    .navbar.cyber-nav {
+        justify-content: flex-start;
+    }
+
+    .navbar.cyber-nav .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 125px;
+        height: 48px;
+        margin-right: 18px;
+        overflow: hidden;
+    }
+
+    .navbar.cyber-nav .logo img {
+        display: block;
+        width: 125px;
+        height: auto;
+        max-height: 48px;
+        object-fit: contain;
+    }
+
+    .navbar.cyber-nav .main-nav {
+        flex: 0 0 auto;
+        margin-left: 0;
+        justify-content: flex-start;
+    }
+
+    .navbar.cyber-nav .nav-actions {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 1000px) {
+    .navbar.cyber-nav .logo {
+        display: flex;
+        align-items: center;
+        width: 110px;
+        height: 42px;
+        flex-shrink: 0;
+    }
+
+    .navbar.cyber-nav .logo img {
+        display: block;
+        width: 110px;
+        height: auto;
+        max-height: 42px;
+        object-fit: contain;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar.cyber-nav .logo {
+        width: 100px;
+        height: 38px;
+    }
+
+    .navbar.cyber-nav .logo img {
+        width: 100px;
+        max-height: 38px;
+    }
+}
 
 </body>
 
