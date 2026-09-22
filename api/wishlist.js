@@ -15,14 +15,12 @@ module.exports = async (req, res) => {
       });
     }
 
-    // =========================
     // GET WISHLIST
-    // =========================
     if (req.method === "GET") {
       const wishlist = await supabaseRequest(
         `wishlists?user_id=eq.${encodeURIComponent(
           user.id
-        )}&select=*`
+        )}&select=id,user_id,product_id,created_at&order=created_at.desc`
       );
 
       return send(res, 200, {
@@ -31,31 +29,34 @@ module.exports = async (req, res) => {
       });
     }
 
-    // =========================
-    // ADD / REMOVE WISHLIST
-    // =========================
+    // ADD / REMOVE
     if (req.method === "POST") {
       const body = await readBody(req);
 
-      const productId = String(body.productId || "").trim();
+      const productId = Number(body.productId);
 
-      if (!productId) {
+      if (!Number.isInteger(productId) || productId <= 0) {
         return send(res, 400, {
           success: false,
-          message: "Product ID is required."
+          message: "Valid product ID is required."
         });
       }
 
+      // Check existing
       const existing = await supabaseRequest(
         `wishlists?user_id=eq.${encodeURIComponent(
           user.id
-        )}&product_id=eq.${encodeURIComponent(productId)}&select=id&limit=1`
+        )}&product_id=eq.${encodeURIComponent(
+          String(productId)
+        )}&select=id&limit=1`
       );
 
-      // REMOVE FROM WISHLIST
+      // Remove
       if (existing && existing.length > 0) {
         await supabaseRequest(
-          `wishlists?id=eq.${encodeURIComponent(existing[0].id)}`,
+          `wishlists?id=eq.${encodeURIComponent(
+            existing[0].id
+          )}`,
           {
             method: "DELETE"
           }
@@ -68,17 +69,20 @@ module.exports = async (req, res) => {
         });
       }
 
-      // ADD TO WISHLIST
-      const created = await supabaseRequest("wishlists", {
-        method: "POST",
-        headers: {
-          Prefer: "return=representation"
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          product_id: productId
-        })
-      });
+      // Add
+      const created = await supabaseRequest(
+        "wishlists",
+        {
+          method: "POST",
+          headers: {
+            Prefer: "return=representation"
+          },
+          body: JSON.stringify({
+            user_id: user.id,
+            product_id: String(productId)
+          })
+        }
+      );
 
       return send(res, 201, {
         success: true,
@@ -94,7 +98,7 @@ module.exports = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("WISHLIST ERROR:", error);
 
     return send(res, 500, {
       success: false,
@@ -104,10 +108,6 @@ module.exports = async (req, res) => {
   }
 };
 
-
-// =========================
-// READ JSON BODY
-// =========================
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
@@ -124,8 +124,10 @@ function readBody(req) {
 
       try {
         resolve(JSON.parse(body));
-      } catch (error) {
-        reject(new Error("Invalid JSON request body."));
+      } catch {
+        reject(
+          new Error("Invalid JSON request body.")
+        );
       }
     });
 

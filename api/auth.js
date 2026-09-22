@@ -4,6 +4,7 @@ const {
   verifyPassword,
   createToken,
   setSessionCookie,
+  getSessionToken,
   getCurrentUser,
   send
 } = require("./db");
@@ -11,6 +12,7 @@ const {
 module.exports = async (req, res) => {
   try {
     const method = req.method;
+
     const url = new URL(
       req.url,
       `http://${req.headers.host || "localhost"}`
@@ -18,25 +20,26 @@ module.exports = async (req, res) => {
 
     const action = url.searchParams.get("action");
 
-    // ==============================
+    // =========================================
     // GET CURRENT USER
     // /api/auth?action=me
-    // ==============================
+    // =========================================
     if (method === "GET" && action === "me") {
       const user = await getCurrentUser(req);
 
       return send(res, 200, {
+        success: true,
         authenticated: !!user,
         user: user || null
       });
     }
 
-    // ==============================
+    // =========================================
     // LOGOUT
     // /api/auth?action=logout
-    // ==============================
+    // =========================================
     if (method === "POST" && action === "logout") {
-      const token = require("./db").getSessionToken(req);
+      const token = getSessionToken(req);
 
       if (token) {
         await supabaseRequest(
@@ -50,7 +53,10 @@ module.exports = async (req, res) => {
       return send(
         res,
         200,
-        { success: true },
+        {
+          success: true,
+          message: "Logged out successfully."
+        },
         {
           "Set-Cookie":
             "cfx_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
@@ -58,15 +64,17 @@ module.exports = async (req, res) => {
       );
     }
 
-    // ==============================
+    // =========================================
     // REGISTER
     // /api/auth?action=register
-    // ==============================
+    // =========================================
     if (method === "POST" && action === "register") {
       const body = await readBody(req);
 
       const name = String(body.name || "").trim();
-      const email = String(body.email || "").trim().toLowerCase();
+      const email = String(body.email || "")
+        .trim()
+        .toLowerCase();
       const password = String(body.password || "");
 
       if (!name || !email || !password) {
@@ -83,8 +91,11 @@ module.exports = async (req, res) => {
         });
       }
 
+      // Check existing user
       const existing = await supabaseRequest(
-        `users?email=eq.${encodeURIComponent(email)}&select=id&limit=1`
+        `users?email=eq.${encodeURIComponent(
+          email
+        )}&select=id&limit=1`
       );
 
       if (existing && existing.length > 0) {
@@ -94,8 +105,10 @@ module.exports = async (req, res) => {
         });
       }
 
+      // Hash password
       const passwordHash = hashPassword(password);
 
+      // Create user
       const created = await supabaseRequest("users", {
         method: "POST",
         headers: {
@@ -108,8 +121,13 @@ module.exports = async (req, res) => {
         })
       });
 
+      if (!created || created.length === 0) {
+        throw new Error("User creation failed.");
+      }
+
       const user = created[0];
 
+      // Create session
       const token = createToken();
 
       const expiresAt = new Date(
@@ -133,6 +151,7 @@ module.exports = async (req, res) => {
         201,
         {
           success: true,
+          message: "Registration successful.",
           user: {
             id: user.id,
             name: user.name,
@@ -145,14 +164,17 @@ module.exports = async (req, res) => {
       );
     }
 
-    // ==============================
+    // =========================================
     // LOGIN
     // /api/auth?action=login
-    // ==============================
+    // =========================================
     if (method === "POST" && action === "login") {
       const body = await readBody(req);
 
-      const email = String(body.email || "").trim().toLowerCase();
+      const email = String(body.email || "")
+        .trim()
+        .toLowerCase();
+
       const password = String(body.password || "");
 
       if (!email || !password) {
@@ -162,8 +184,11 @@ module.exports = async (req, res) => {
         });
       }
 
+      // Find user
       const users = await supabaseRequest(
-        `users?email=eq.${encodeURIComponent(email)}&select=id,name,email,password_hash&limit=1`
+        `users?email=eq.${encodeURIComponent(
+          email
+        )}&select=id,name,email,password_hash&limit=1`
       );
 
       if (!users || users.length === 0) {
@@ -175,6 +200,14 @@ module.exports = async (req, res) => {
 
       const user = users[0];
 
+      if (!user.password_hash) {
+        return send(res, 500, {
+          success: false,
+          message: "User password data is missing."
+        });
+      }
+
+      // Verify password
       const valid = verifyPassword(
         password,
         user.password_hash
@@ -187,6 +220,7 @@ module.exports = async (req, res) => {
         });
       }
 
+      // Create session
       const token = createToken();
 
       const expiresAt = new Date(
@@ -210,6 +244,7 @@ module.exports = async (req, res) => {
         200,
         {
           success: true,
+          message: "Login successful.",
           user: {
             id: user.id,
             name: user.name,
@@ -222,24 +257,32 @@ module.exports = async (req, res) => {
       );
     }
 
+    // =========================================
+    // UNKNOWN ACTION
+    // =========================================
     return send(res, 404, {
       success: false,
       message: "Auth endpoint not found."
     });
+
   } catch (error) {
-    console.error(error);
+    console.error("AUTH API ERROR:", error);
 
     return send(res, 500, {
       success: false,
       message: "Server error.",
-      error: error.message
+      error:
+        error && error.message
+          ? error.message
+          : "Unknown server error."
     });
   }
 };
 
-// ======================================
-// READ JSON REQUEST BODY
-// ======================================
+
+// =========================================
+// READ JSON BODY
+// =========================================
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
@@ -255,12 +298,17 @@ function readBody(req) {
       }
 
       try {
-        resolve(JSON.parse(body));
+        const parsed = JSON.parse(body);
+        resolve(parsed);
       } catch (error) {
-        reject(new Error("Invalid JSON request body."));
+        reject(
+          new Error("Invalid JSON request body.")
+        );
       }
     });
 
-    req.on("error", reject);
+    req.on("error", error => {
+      reject(error);
+    });
   });
 }
