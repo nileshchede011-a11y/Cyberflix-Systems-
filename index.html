@@ -88,6 +88,31 @@
             cursor: default;
         }
 
+
+        /* =====================================================
+           NAVBAR — KEEP LOGO CLOSE TO HOME
+        ===================================================== */
+        @media (min-width: 1001px) {
+            .navbar.cyber-nav {
+                justify-content: flex-start;
+            }
+
+            .navbar.cyber-nav .logo {
+                flex: 0 0 auto;
+                margin-right: 18px;
+            }
+
+            .navbar.cyber-nav .main-nav {
+                flex: 0 0 auto;
+                margin-left: 0;
+                justify-content: flex-start;
+            }
+
+            .navbar.cyber-nav .nav-actions {
+                margin-left: auto;
+            }
+        }
+
         /* =====================================================
            MOBILE AUTH
         ===================================================== */
