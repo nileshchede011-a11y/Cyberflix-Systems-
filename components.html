@@ -13,15 +13,6 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap"
         rel="stylesheet"
     >
-
-<style>
-.auth-nav { display:flex; align-items:center; gap:12px; margin-left:10px; }
-.auth-nav a { color:inherit; text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.6px; white-space:nowrap; }
-.nav-login, .nav-wishlist { color:#08B5D9 !important; }
-.nav-user { color:#08B5D9 !important; }
-.nav-logout { color:#ff6b6b !important; }
-@media (max-width:900px) { .auth-nav { display:none; } }
-</style>
 </head>
 
 <body>
@@ -32,39 +23,71 @@
 
     <div class="nav-container">
 
-        <a href="index.html" class="logo">
-            <span class="logo-mark">C</span>
-            <span class="logo-text">
-                CYBERFLIX
-                <small>SYSTEMS LLP</small>
-            </span>
+        <a href="index.html" class="logo official-logo" aria-label="Cyberflix Systems home">
+            <img src="assets/cyberflix-logo.png" alt="Cyberflix Systems LLP">
         </a>
 
+
         <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="components.html" class="active">Components</a>
-            <a href="builder.html">PC Builder</a>
-            <a href="index.html#custom-pcs">Custom Builds</a>
-            <a href="index.html#deals">RTX & Deals</a>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="components.html" class="active">
+                Components
+            </a>
+
+            <a href="builder.html">
+                PC Builder
+            </a>
+
+            <a href="index.html#custom-pcs">
+                Custom Builds
+            </a>
+
+            <a href="index.html#deals">
+                RTX & Deals
+            </a>
+
         </nav>
 
-        <div class="nav-actions">
-            <button class="nav-icon" onclick="focusSearch()" title="Search">⌕</button>
 
-            <button class="nav-icon cart-icon" onclick="goToCart()" title="Cart">
-                🛒 <span id="cartCount">0</span>
+        <div class="nav-actions">
+
+            <button
+                class="nav-icon"
+                onclick="focusSearch()"
+                title="Search"
+            >
+                ⌕
             </button>
 
-            <div class="auth-nav">
-                <a href="login.html" data-auth="login" class="nav-login">LOGIN</a>
-                <a href="javascript:void(0)" data-auth="user" class="nav-user" style="display:none;">Hi, User</a>
-                <a href="javascript:void(0)" data-auth="logout" class="nav-logout" style="display:none;" onclick="cyberflixLogout()">LOGOUT</a>
-                <a href="wishlist.html" class="nav-wishlist">♡ WISHLIST</a>
-            </div>
 
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <button
+                class="nav-icon cart-icon"
+                onclick="goToCart()"
+                title="Cart"
+            >
+                🛒
+
+                <span id="cartCount">
+                    0
+                </span>
+            </button>
+
+
+            <button
+                class="menu-btn"
+                onclick="toggleMenu()"
+            >
+                ☰
+            </button>
+
         </div>
+
     </div>
+
 </header>
 
 
@@ -72,14 +95,26 @@
 
 <div class="mobile-menu" id="mobileMenu">
 
-    <a href="index.html">Home</a>
-    <a href="components.html">Components</a>
-    <a href="builder.html">PC Builder</a>
-    <a href="index.html#custom-pcs">Custom Builds</a>
-    <a href="index.html#deals">RTX & Deals</a>
-    <a href="wishlist.html">♡ Wishlist</a>
-    <a href="login.html" data-auth="login">Login</a>
-    <a href="javascript:void(0)" data-auth="logout" style="display:none;" onclick="cyberflixLogout()">Logout</a>
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="components.html">
+        Components
+    </a>
+
+    <a href="builder.html">
+        PC Builder
+    </a>
+
+    <a href="index.html#custom-pcs">
+        Custom Builds
+    </a>
+
+    <a href="index.html#deals">
+        RTX & Deals
+    </a>
+
 </div>
 
 
@@ -469,7 +504,6 @@
 
 <!-- ================= SCRIPT ================= -->
 
-<script src="script.js"></script>
 <script src="components.js"></script>
 
 
