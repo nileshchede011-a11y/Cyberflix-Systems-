@@ -1,5 +1,800 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>PC Builder | Cyberflix Systems LLP"><link rel="stylesheet" href="style.css"></head><body>
-<header class="navbar cyber-nav final-nav"><a class="logo official-logo" href="index.html"><img src="assets/cyberflix-logo.png" alt="Cyberflix Systems LLP"></a><nav class="main-nav"><a href="index.html">Home</a><a href="components.html">Components</a><a class="active" href="builder.html">PC Builder</a><a href="cart.html">Cart</a><a href="wishlist.html">Wishlist</a></nav><div class="nav-actions"><a class="nav-quote" href="cart.html">CART →</a></div></header>
-<section class="page-hero"><div class="page-shell"><h1>BUILD YOUR <span>DREAM PC.</span></h1><p>Select compatible components. Cyberflix calculates your estimated total, power requirement and major compatibility rules.</p></div></section>
-<main class="page-shell"><div class="builder-layout-final"><div class="form-card"><h2>Choose Components</h2><div class="form-grid" id="builderForm"></div><div id="compatibility" class="compatibility-box" style="margin-top:20px"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><button class="primary-btn" id="addBuild">ADD BUILD TO CART</button><button class="secondary-btn" id="resetBuild">RESET</button></div></div><aside class="summary-card"><h2>Build Summary</h2><div id="summaryItems"></div><hr style="border-color:#222;margin:18px 0"><div style="display:flex;justify-content:space-between"><span>Estimated Power</span><strong id="power">0W</strong></div><div style="display:flex;justify-content:space-between;margin-top:10px"><span>Total</span><strong id="total" style="color:#08B5D9;font-size:24px">₹0</strong></div></aside></div></main>
-<script src="builder.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Builder | Cyberflix Systems LLP</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07090d;
+    color:#fff;
+    min-height:100vh;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+.navbar{
+    height:78px;
+    padding:0 6%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#0b0e13;
+    border-bottom:1px solid #20252d;
+}
+
+.logo img{
+    width:210px;
+    max-height:55px;
+    object-fit:contain;
+}
+
+.main-nav{
+    display:flex;
+    gap:28px;
+    align-items:center;
+}
+
+.main-nav a{
+    color:#b8c0cc;
+    font-size:14px;
+    font-weight:600;
+}
+
+.main-nav a:hover,
+.main-nav a.active{
+    color:#08b5d9;
+}
+
+.nav-quote{
+    color:#08b5d9;
+    font-size:13px;
+    font-weight:700;
+}
+
+.page-hero{
+    padding:65px 6% 45px;
+    background:
+        radial-gradient(circle at 80% 20%,rgba(8,181,217,.12),transparent 35%),
+        #090c11;
+    border-bottom:1px solid #20252d;
+}
+
+.page-shell{
+    width:min(1200px,92%);
+    margin:auto;
+}
+
+.page-hero h1{
+    font-size:48px;
+    line-height:1.05;
+    margin-bottom:16px;
+}
+
+.page-hero h1 span{
+    color:#08b5d9;
+}
+
+.page-hero p{
+    max-width:700px;
+    color:#9da6b3;
+    line-height:1.7;
+}
+
+.builder-wrap{
+    width:min(1200px,92%);
+    margin:40px auto 80px;
+    display:grid;
+    grid-template-columns:1.55fr .85fr;
+    gap:25px;
+}
+
+.card{
+    background:#0d1117;
+    border:1px solid #222933;
+    border-radius:14px;
+    padding:28px;
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.card h2{
+    margin-bottom:22px;
+    font-size:24px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.field label{
+    color:#dce3eb;
+    font-size:13px;
+    font-weight:700;
+}
+
+.field select{
+    width:100%;
+    background:#080b10;
+    color:#fff;
+    border:1px solid #303844;
+    border-radius:9px;
+    padding:13px;
+    outline:none;
+    cursor:pointer;
+}
+
+.field select:focus{
+    border-color:#08b5d9;
+    box-shadow:0 0 0 2px rgba(8,181,217,.12);
+}
+
+.summary{
+    position:sticky;
+    top:20px;
+    height:max-content;
+}
+
+.summary-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.summary-item{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:12px;
+    background:#080b10;
+    border:1px solid #1e252e;
+    border-radius:8px;
+}
+
+.summary-item span:first-child{
+    color:#8e99a7;
+    font-size:12px;
+}
+
+.summary-item strong{
+    font-size:13px;
+    text-align:right;
+}
+
+.stat{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #20252d;
+}
+
+.stat span{
+    color:#929daa;
+}
+
+.stat strong{
+    color:#fff;
+}
+
+.total{
+    margin-top:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.total span{
+    font-size:16px;
+    font-weight:700;
+}
+
+.total strong{
+    color:#08b5d9;
+    font-size:28px;
+}
+
+.compatibility{
+    margin-top:22px;
+    padding:15px;
+    border-radius:9px;
+    border:1px solid #28313b;
+    background:#090d12;
+    color:#aeb8c5;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.compatibility.ok{
+    border-color:#176d55;
+    color:#6ee7b7;
+    background:rgba(16,185,129,.06);
+}
+
+.compatibility.warning{
+    border-color:#8a6518;
+    color:#f4c95d;
+    background:rgba(245,158,11,.06);
+}
+
+.actions{
+    display:flex;
+    gap:12px;
+    margin-top:22px;
+}
+
+button{
+    border:0;
+    border-radius:9px;
+    padding:13px 20px;
+    font-weight:800;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.primary{
+    background:#08b5d9;
+    color:#031016;
+}
+
+.primary:hover{
+    background:#18c7eb;
+}
+
+.secondary{
+    background:#1b222b;
+    color:#fff;
+}
+
+.secondary:hover{
+    background:#272f3a;
+}
+
+.message{
+    margin-top:15px;
+    font-size:13px;
+    color:#08b5d9;
+    min-height:18px;
+}
+
+@media(max-width:900px){
+    .main-nav{
+        display:none;
+    }
+
+    .builder-wrap{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        position:static;
+    }
+}
+
+@media(max-width:600px){
+    .navbar{
+        height:68px;
+        padding:0 4%;
+    }
+
+    .logo img{
+        width:170px;
+    }
+
+    .page-hero{
+        padding:45px 4% 35px;
+    }
+
+    .page-hero h1{
+        font-size:34px;
+    }
+
+    .builder-wrap{
+        width:92%;
+        margin-top:25px;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .actions{
+        flex-direction:column;
+    }
+
+    button{
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <a class="logo" href="index.html">
+        <img src="assets/cyberflix-logo.png" alt="Cyberflix Systems LLP">
+    </a>
+
+    <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="components.html">Components</a>
+        <a href="builder.html" class="active">PC Builder</a>
+        <a href="cart.html">Cart</a>
+        <a href="wishlist.html">Wishlist</a>
+    </nav>
+
+    <a class="nav-quote" href="cart.html">CART →</a>
+</header>
+
+<section class="page-hero">
+    <div class="page-shell">
+        <h1>BUILD YOUR <span>DREAM PC.</span></h1>
+        <p>
+            Select your components and build your custom PC.
+            Cyberflix automatically calculates the estimated total,
+            power requirement and major compatibility checks.
+        </p>
+    </div>
+</section>
+
+<main class="builder-wrap">
+
+    <section class="card">
+
+        <h2>Choose Components</h2>
+
+        <div class="form-grid" id="builderForm"></div>
+
+        <div id="compatibility" class="compatibility">
+            Checking compatibility...
+        </div>
+
+        <div class="actions">
+            <button class="primary" id="addBuild">
+                ADD BUILD TO CART
+            </button>
+
+            <button class="secondary" id="resetBuild">
+                RESET
+            </button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+    </section>
+
+    <aside class="card summary">
+
+        <h2>Build Summary</h2>
+
+        <div class="summary-list" id="summaryItems"></div>
+
+        <div class="stat">
+            <span>Estimated Power</span>
+            <strong id="power">0W</strong>
+        </div>
+
+        <div class="total">
+            <span>Total</span>
+            <strong id="total">₹0</strong>
+        </div>
+
+    </aside>
+
+</main>
+
+<script>
+const components = {
+
+    cpu: [
+        {
+            name:"Intel Core i5-14600K",
+            price:18000,
+            power:125,
+            brand:"Intel"
+        },
+        {
+            name:"Intel Core i7-14700K",
+            price:25000,
+            power:150,
+            brand:"Intel"
+        },
+        {
+            name:"AMD Ryzen 7 7800X3D",
+            price:32000,
+            power:120,
+            brand:"AMD"
+        }
+    ],
+
+    gpu: [
+        {
+            name:"RTX 4060",
+            price:30000,
+            power:115
+        },
+        {
+            name:"RTX 4070 Super",
+            price:50000,
+            power:220
+        },
+        {
+            name:"RTX 4080 Super",
+            price:75000,
+            power:320
+        }
+    ],
+
+    motherboard: [
+        {
+            name:"B760 Gaming",
+            price:15000,
+            brand:"Intel"
+        },
+        {
+            name:"Z790 Gaming",
+            price:22000,
+            brand:"Intel"
+        },
+        {
+            name:"B650 Gaming",
+            price:18000,
+            brand:"AMD"
+        }
+    ],
+
+    ram: [
+        {
+            name:"16GB DDR5",
+            price:6000,
+            power:10
+        },
+        {
+            name:"32GB DDR5",
+            price:11000,
+            power:12
+        },
+        {
+            name:"64GB DDR5",
+            price:19000,
+            power:15
+        }
+    ],
+
+    storage: [
+        {
+            name:"1TB NVMe",
+            price:5000,
+            power:8
+        },
+        {
+            name:"2TB NVMe",
+            price:9000,
+            power:10
+        }
+    ],
+
+    psu: [
+        {
+            name:"650W Gold",
+            price:7000,
+            watt:650
+        },
+        {
+            name:"750W Gold",
+            price:10000,
+            watt:750
+        },
+        {
+            name:"850W Gold",
+            price:15000,
+            watt:850
+        }
+    ],
+
+    case: [
+        {
+            name:"Airflow Gaming Case",
+            price:6000,
+            power:0
+        },
+        {
+            name:"RGB Gaming Case",
+            price:9000,
+            power:15
+        },
+        {
+            name:"Premium Glass Case",
+            price:14000,
+            power:20
+        }
+    ],
+
+    cooler: [
+        {
+            name:"Air Cooler",
+            price:4000,
+            power:5
+        },
+        {
+            name:"240mm AIO",
+            price:8000,
+            power:10
+        },
+        {
+            name:"360mm AIO",
+            price:12000,
+            power:15
+        }
+    ]
+};
+
+const labels = {
+    cpu:"CPU",
+    gpu:"GPU",
+    motherboard:"Motherboard",
+    ram:"RAM",
+    storage:"Storage",
+    psu:"Power Supply",
+    case:"Case",
+    cooler:"CPU Cooler"
+};
+
+const form = document.getElementById("builderForm");
+const summary = document.getElementById("summaryItems");
+const compatibility = document.getElementById("compatibility");
+const totalElement = document.getElementById("total");
+const powerElement = document.getElementById("power");
+const message = document.getElementById("message");
+
+function formatPrice(value){
+    return "₹" + value.toLocaleString("en-IN");
+}
+
+function createFields(){
+
+    Object.keys(components).forEach(type => {
+
+        const field = document.createElement("div");
+        field.className = "field";
+
+        const label = document.createElement("label");
+        label.textContent = labels[type];
+
+        const select = document.createElement("select");
+        select.id = type;
+
+        components[type].forEach((item,index) => {
+
+            const option = document.createElement("option");
+
+            option.value = index;
+
+            option.textContent =
+                item.name + " — " + formatPrice(item.price);
+
+            select.appendChild(option);
+        });
+
+        select.addEventListener("change", updateBuilder);
+
+        field.appendChild(label);
+        field.appendChild(select);
+
+        form.appendChild(field);
+    });
+}
+
+function getSelected(type){
+
+    const select = document.getElementById(type);
+
+    if(!select) return null;
+
+    return components[type][Number(select.value)];
+}
+
+function calculateTotal(){
+
+    let total = 0;
+
+    Object.keys(components).forEach(type => {
+
+        const item = getSelected(type);
+
+        if(item){
+            total += item.price;
+        }
+    });
+
+    return total;
+}
+
+function calculatePower(){
+
+    let power = 80;
+
+    Object.keys(components).forEach(type => {
+
+        const item = getSelected(type);
+
+        if(item && item.power){
+            power += item.power;
+        }
+    });
+
+    return power;
+}
+
+function checkCompatibility(){
+
+    const cpu = getSelected("cpu");
+    const motherboard = getSelected("motherboard");
+    const psu = getSelected("psu");
+
+    if(!cpu || !motherboard || !psu) return;
+
+    let problems = [];
+
+    if(cpu.brand !== motherboard.brand){
+
+        problems.push(
+            "CPU and motherboard platform mismatch."
+        );
+    }
+
+    const requiredPower = calculatePower();
+
+    if(psu.watt < requiredPower){
+
+        problems.push(
+            "PSU wattage is lower than estimated system requirement."
+        );
+    }
+
+    if(problems.length){
+
+        compatibility.className =
+            "compatibility warning";
+
+        compatibility.innerHTML =
+            "<strong>Compatibility Warning</strong><br>" +
+            problems.join("<br>");
+
+    }else{
+
+        compatibility.className =
+            "compatibility ok";
+
+        compatibility.innerHTML =
+            "<strong>✓ Build Compatible</strong><br>" +
+            "All major compatibility checks passed.";
+    }
+}
+
+function updateSummary(){
+
+    summary.innerHTML = "";
+
+    Object.keys(components).forEach(type => {
+
+        const item = getSelected(type);
+
+        if(!item) return;
+
+        const row = document.createElement("div");
+        row.className = "summary-item";
+
+        row.innerHTML =
+            "<span>" + labels[type] + "</span>" +
+            "<strong>" + item.name + "</strong>";
+
+        summary.appendChild(row);
+    });
+
+    totalElement.textContent =
+        formatPrice(calculateTotal());
+
+    powerElement.textContent =
+        calculatePower() + "W";
+}
+
+function updateBuilder(){
+
+    updateSummary();
+    checkCompatibility();
+}
+
+function resetBuild(){
+
+    Object.keys(components).forEach(type => {
+
+        const select = document.getElementById(type);
+
+        if(select){
+            select.selectedIndex = 0;
+        }
+    });
+
+    message.textContent = "";
+
+    updateBuilder();
+}
+
+function addBuildToCart(){
+
+    const items = [];
+
+    Object.keys(components).forEach(type => {
+
+        const item = getSelected(type);
+
+        if(item){
+
+            items.push({
+                id:"builder-" + type,
+                name:item.name,
+                category:labels[type],
+                price:item.price,
+                quantity:1
+            });
+        }
+    });
+
+    const build = {
+        items:items,
+        total:calculateTotal(),
+        power:calculatePower(),
+        createdAt:new Date().toISOString()
+    };
+
+    localStorage.setItem(
+        "cyberflixBuild",
+        JSON.stringify(build)
+    );
+
+    message.textContent =
+        "Build added to cart successfully.";
+
+    setTimeout(() => {
+
+        window.location.href = "cart.html";
+
+    },700);
+}
+
+document.getElementById("addBuild")
+    .addEventListener("click", addBuildToCart);
+
+document.getElementById("resetBuild")
+    .addEventListener("click", resetBuild);
+
+createFields();
+updateBuilder();
+</script>
+
+</body>
+</html>
