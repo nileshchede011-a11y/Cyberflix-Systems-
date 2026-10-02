@@ -1,1 +1,780 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Wishlist | Cyberflix Systems LLP"><link rel="stylesheet" href="style.css"></head><body><header class="navbar cyber-nav final-nav"><a class="logo official-logo" href="index.html"><img src="assets/cyberflix-logo.png" alt="Cyberflix Systems LLP"></a><nav class="main-nav"><a href="index.html">Home</a><a href="components.html">Components</a><a href="builder.html">PC Builder</a><a class="active" href="wishlist.html">Wishlist</a></nav></header><section class="page-hero"><div class="page-shell"><h1>YOUR <span>WISHLIST.</span></h1><p>Saved components for your next build.</p></div></section><main class="page-shell"><section id="wishlistGrid" class="product-grid"></section></main><script src="components.js"></script><script src="wishlist.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist | Cyberflix Systems LLP</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7f9;
+            color: #111827;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            height: 76px;
+            background: #07141a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            border-bottom: 1px solid #18343d;
+        }
+
+        .logo img {
+            width: 190px;
+            max-height: 48px;
+            object-fit: contain;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: #d8e5e9;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: #08b5d9;
+        }
+
+        /* HERO */
+        .page-hero {
+            background: linear-gradient(135deg, #07141a, #0b252e);
+            padding: 70px 6%;
+            color: white;
+        }
+
+        .page-shell {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-hero h1 {
+            font-size: 42px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .page-hero h1 span {
+            color: #08b5d9;
+        }
+
+        .page-hero p {
+            color: #a9c0c7;
+            font-size: 16px;
+        }
+
+        /* CONTENT */
+        main {
+            padding: 50px 6%;
+            min-height: 500px;
+        }
+
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .wishlist-header h2 {
+            font-size: 25px;
+        }
+
+        .wishlist-count {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* GRID */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.10);
+        }
+
+        .product-image {
+            height: 220px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .category {
+            color: #08b5d9;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .product-info h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 11px 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .cart-btn {
+            flex: 1;
+            background: #08b5d9;
+            color: white;
+        }
+
+        .cart-btn:hover {
+            background: #0799b7;
+        }
+
+        .remove-btn {
+            background: #eef2f4;
+            color: #334155;
+        }
+
+        .remove-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* EMPTY */
+        .empty {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 70px 30px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 18px;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            background: #08b5d9;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .shop-btn:hover {
+            background: #0799b7;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #07141a;
+            color: #9fb3ba;
+            padding: 40px 6%;
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-logo img {
+            width: 180px;
+            margin-bottom: 12px;
+        }
+
+        .footer-inner p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .footer-links a:hover {
+            color: #08b5d9;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-nav {
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                height: auto;
+                padding: 18px 5%;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .main-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .page-hero {
+                padding: 50px 5%;
+            }
+
+            .page-hero h1 {
+                font-size: 32px;
+            }
+
+            main {
+                padding: 35px 5%;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wishlist-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <a class="logo" href="index.html">
+        <img src="assets/cyberflix-logo.png"
+             alt="Cyberflix Systems LLP">
+    </a>
+
+    <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="components.html">Components</a>
+        <a href="builder.html">PC Builder</a>
+        <a class="active" href="wishlist.html">Wishlist</a>
+        <a href="cart.html">Cart</a>
+    </nav>
+
+</header>
+
+
+<section class="page-hero">
+
+    <div class="page-shell">
+
+        <h1>
+            YOUR <span>WISHLIST.</span>
+        </h1>
+
+        <p>
+            Save your favourite PC components for your next build.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main>
+
+    <div class="page-shell">
+
+        <div class="wishlist-header">
+
+            <h2>Saved Components</h2>
+
+            <div class="wishlist-count" id="wishlistCount">
+                0 items
+            </div>
+
+        </div>
+
+        <section
+            id="wishlistGrid"
+            class="product-grid">
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div>
+            <a class="footer-logo" href="index.html">
+                <img src="assets/cyberflix-logo.png"
+                     alt="Cyberflix Systems LLP">
+            </a>
+
+            <p>
+                Professional PC components and custom gaming builds.
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="components.html">Components</a>
+            <a href="builder.html">PC Builder</a>
+            <a href="cart.html">Cart</a>
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    /* ================================
+       CYBERFLIX WISHLIST
+       ================================ */
+
+    const PRODUCTS = [
+
+        {
+            id: "cpu-i5-14600k",
+            name: "Intel Core i5-14600K",
+            category: "CPU",
+            price: 18000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Intel_Core_i5-14600K_(INVADERPC)_01.png"
+        },
+
+        {
+            id: "ryzen-7800x3d",
+            name: "AMD Ryzen 7 7800X3D",
+            category: "CPU",
+            price: 32000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/AMD@5nmCCD(6nmIOD)@Zen4@Raphael@Ryzen_7_7800X3D@100-000000910_BS_2312PGY_9LW3390030138_DSCx01.jpg"
+        },
+
+        {
+            id: "rtx-4070-super",
+            name: "GIGABYTE RTX 4070 Super",
+            category: "GPU",
+            price: 50000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Video_%C3%BCber_die_RTX_4070_Super_und_Vergleichskarten_(%E6%9E%81%E5%AE%A2%E6%B9%BEGeekerwan)_03.png"
+        },
+
+        {
+            id: "rtx-4060",
+            name: "GIGABYTE RTX 4060",
+            category: "GPU",
+            price: 30000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Video_%C3%BCber_die_GeForce_RTX_4060_(%E6%9E%81%E5%AE%A2%E6%B9%BEGeekerwan)_05.png"
+        },
+
+        {
+            id: "b760",
+            name: "MSI B760 Gaming Plus WiFi",
+            category: "Motherboard",
+            price: 15000,
+            image: "https://m.media-amazon.com/images/I/51lLktu5Z3L._AC_.jpg"
+        },
+
+        {
+            id: "corsair-ram",
+            name: "Corsair Vengeance RGB 32GB",
+            category: "RAM",
+            price: 11000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/2023_Pami%C4%99ci_Corsair_Vengeance_RGB.jpg"
+        },
+
+        {
+            id: "samsung-990",
+            name: "Samsung 990 EVO Plus 2TB",
+            category: "SSD",
+            price: 9000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/SSD_Samsung_990_EVO_Plus_2TB,_Model_MZ-V9S2T0-2801.jpg"
+        },
+
+        {
+            id: "corsair-rm750e",
+            name: "Corsair RM750e 750W",
+            category: "PSU",
+            price: 10000,
+            image: "https://www.corsair.com/corsairmedia/sys_master/productcontent/CP-9020262-NA-RM750e-PSU-01.png"
+        },
+
+        {
+            id: "nzxt-kraken",
+            name: "NZXT Kraken X52",
+            category: "Cooler",
+            price: 8000,
+            image: "https://commons.wikimedia.org/wiki/Special:Redirect/file/NZXT_Kraken_X52_cooler_in_H500i.jpg"
+        }
+
+    ];
+
+
+    function getWishlist() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem("cyberflixWishlist")
+            ) || [];
+
+        } catch (error) {
+
+            console.error(error);
+
+            return [];
+
+        }
+
+    }
+
+
+    function saveWishlist(list) {
+
+        localStorage.setItem(
+            "cyberflixWishlist",
+            JSON.stringify(list)
+        );
+
+    }
+
+
+    function getCart() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem("cyberflixCart")
+            ) || [];
+
+        } catch (error) {
+
+            return [];
+
+        }
+
+    }
+
+
+    function saveCart(cart) {
+
+        localStorage.setItem(
+            "cyberflixCart",
+            JSON.stringify(cart)
+        );
+
+    }
+
+
+    function formatPrice(price) {
+
+        return "₹" + Number(price).toLocaleString("en-IN");
+
+    }
+
+
+    function addToCart(id) {
+
+        const product = PRODUCTS.find(
+            item => item.id === id
+        );
+
+        if (!product) return;
+
+        const cart = getCart();
+
+        const existing = cart.find(
+            item => item.id === id
+        );
+
+        if (existing) {
+
+            existing.quantity =
+                Number(existing.quantity || 1) + 1;
+
+        } else {
+
+            cart.push({
+                ...product,
+                quantity: 1
+            });
+
+        }
+
+        saveCart(cart);
+
+        alert(product.name + " added to cart!");
+
+        updateCartCount();
+
+    }
+
+
+    function removeFromWishlist(id) {
+
+        const wishlist = getWishlist()
+            .filter(item => String(item) !== String(id));
+
+        saveWishlist(wishlist);
+
+        renderWishlist();
+
+    }
+
+
+    function moveToCart(id) {
+
+        addToCart(id);
+
+        removeFromWishlist(id);
+
+    }
+
+
+    function updateCartCount() {
+
+        /* Keeps cart data compatible with existing Cyberflix cart */
+
+        const cart = getCart();
+
+        let count = 0;
+
+        cart.forEach(item => {
+
+            count += Number(
+                item.quantity || 1
+            );
+
+        });
+
+    }
+
+
+    function renderWishlist() {
+
+        const grid =
+            document.getElementById("wishlistGrid");
+
+        const count =
+            document.getElementById("wishlistCount");
+
+        if (!grid) return;
+
+        const wishlist = getWishlist();
+
+        const ids = wishlist.map(item => {
+
+            if (typeof item === "object") {
+
+                return item.id;
+
+            }
+
+            return item;
+
+        });
+
+        const products = PRODUCTS.filter(
+            product => ids.includes(product.id)
+        );
+
+
+        count.textContent =
+            products.length +
+            (products.length === 1 ? " item" : " items");
+
+
+        if (products.length === 0) {
+
+            grid.innerHTML = `
+
+                <div class="empty"
+                     style="grid-column:1/-1">
+
+                    <div class="empty-icon">
+                        ♡
+                    </div>
+
+                    <h2>
+                        Your Wishlist Is Empty
+                    </h2>
+
+                    <p>
+                        Save components you like and
+                        build your dream PC later.
+                    </p>
+
+                    <a
+                        href="components.html"
+                        class="shop-btn">
+                        Browse Components
+                    </a>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        grid.innerHTML = products.map(product => `
+
+            <article class="product-card">
+
+                <div class="product-image">
+
+                    <img
+                        src="${product.image}"
+                        alt="${product.name}"
+                        loading="lazy"
+                        onerror="this.style.display='none';"
+                    >
+
+                </div>
+
+
+                <div class="product-info">
+
+                    <div class="category">
+                        ${product.category}
+                    </div>
+
+                    <h3>
+                        ${product.name}
+                    </h3>
+
+                    <div class="price">
+                        ${formatPrice(product.price)}
+                    </div>
+
+
+                    <div class="buttons">
+
+                        <button
+                            class="cart-btn"
+                            onclick="moveToCart('${product.id}')">
+                            Add to Cart
+                        </button>
+
+                        <button
+                            class="remove-btn"
+                            onclick="removeFromWishlist('${product.id}')">
+                            Remove
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        `).join("");
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            renderWishlist();
+
+            updateCartCount();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
