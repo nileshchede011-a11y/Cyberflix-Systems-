@@ -1,4 +1,1425 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Cart | Cyberflix Systems LLP"><link rel="stylesheet" href="style.css"></head><body>
-<header class="navbar cyber-nav final-nav"><a class="logo official-logo" href="index.html"><img src="assets/cyberflix-logo.png" alt="Cyberflix Systems LLP"></a><nav class="main-nav"><a href="index.html">Home</a><a href="components.html">Components</a><a href="builder.html">PC Builder</a><a class="active" href="cart.html">Cart</a><a href="wishlist.html">Wishlist</a></nav></header>
-<section class="page-hero"><div class="page-shell"><h1>YOUR <span>CART.</span></h1><p>Review your selected components and custom PC build before checkout.</p></div></section>
-<main class="page-shell"><div id="cartContent"></div></main><script src="cart.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cart | Cyberflix Systems LLP</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7f9;
+            color: #111827;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            min-height: 76px;
+            background: #07141a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 6%;
+            border-bottom: 1px solid #18343d;
+        }
+
+        .logo img {
+            width: 190px;
+            max-height: 48px;
+            object-fit: contain;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 26px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .main-nav a {
+            color: #d8e5e9;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: #08b5d9;
+        }
+
+        /* HERO */
+
+        .page-hero {
+            background: linear-gradient(135deg, #07141a, #0b252e);
+            padding: 65px 6%;
+            color: white;
+        }
+
+        .page-shell {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-hero h1 {
+            font-size: 42px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .page-hero h1 span {
+            color: #08b5d9;
+        }
+
+        .page-hero p {
+            color: #a9c0c7;
+            font-size: 16px;
+        }
+
+        /* MAIN */
+
+        main {
+            padding: 50px 6%;
+            min-height: 550px;
+        }
+
+        .cart-layout {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* CART ITEMS */
+
+        .cart-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .cart-title {
+            padding: 22px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-title h2 {
+            font-size: 22px;
+        }
+
+        .cart-title span {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 105px 1fr auto;
+            gap: 20px;
+            padding: 22px;
+            border-bottom: 1px solid #edf1f3;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 105px;
+            height: 95px;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .item-category {
+            color: #08b5d9;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .item-name {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .item-price {
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .quantity button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #d8e1e5;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+        .quantity button:hover {
+            border-color: #08b5d9;
+            color: #08b5d9;
+        }
+
+        .quantity-value {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .item-right {
+            text-align: right;
+            min-width: 120px;
+        }
+
+        .item-total {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .remove-btn {
+            border: none;
+            background: transparent;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .remove-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 25px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary h2 {
+            font-size: 22px;
+            margin-bottom: 22px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf1f3;
+            color: #475569;
+        }
+
+        .summary-row strong {
+            color: #111827;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .summary-total span:last-child {
+            color: #08b5d9;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #08b5d9;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background: #0799b7;
+        }
+
+        .clear-btn {
+            width: 100%;
+            background: #f1f5f9;
+            color: #334155;
+            border: none;
+            padding: 13px;
+            border-radius: 9px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .clear-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* EMPTY */
+
+        .empty-cart {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 80px 30px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 18px;
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            background: #08b5d9;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 4px;
+        }
+
+        .shop-btn:hover {
+            background: #0799b7;
+        }
+
+        .builder-btn {
+            background: #07141a;
+        }
+
+        .builder-btn:hover {
+            background: #102b34;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #07141a;
+            color: #9fb3ba;
+            padding: 40px 6%;
+            margin-top: 30px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-logo img {
+            width: 180px;
+            margin-bottom: 12px;
+        }
+
+        .footer-inner p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a:hover {
+            color: #08b5d9;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .main-nav {
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .page-hero {
+                padding: 50px 5%;
+            }
+
+            .page-hero h1 {
+                font-size: 32px;
+            }
+
+            main {
+                padding: 30px 5%;
+            }
+
+            .cart-item {
+                grid-template-columns: 75px 1fr;
+                gap: 14px;
+            }
+
+            .item-image {
+                width: 75px;
+                height: 75px;
+            }
+
+            .item-right {
+                grid-column: 2;
+                text-align: left;
+            }
+
+            .item-total {
+                margin-bottom: 7px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <a class="logo" href="index.html">
+        <img
+            src="assets/cyberflix-logo.png"
+            alt="Cyberflix Systems LLP">
+    </a>
+
+    <nav class="main-nav">
+
+        <a href="index.html">Home</a>
+
+        <a href="components.html">
+            Components
+        </a>
+
+        <a href="builder.html">
+            PC Builder
+        </a>
+
+        <a href="wishlist.html">
+            Wishlist
+        </a>
+
+        <a class="active" href="cart.html">
+            Cart
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="page-hero">
+
+    <div class="page-shell">
+
+        <h1>
+            YOUR <span>CART.</span>
+        </h1>
+
+        <p>
+            Review your components and continue to checkout.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- MAIN -->
+
+<main>
+
+    <div id="emptyCart" class="page-shell empty-cart">
+
+        <div class="empty-icon">
+            🛒
+        </div>
+
+        <h2>
+            Your Cart Is Empty
+        </h2>
+
+        <p>
+            Add components or create a custom PC build.
+        </p>
+
+        <a
+            href="components.html"
+            class="shop-btn">
+            Browse Components
+        </a>
+
+        <a
+            href="builder.html"
+            class="shop-btn builder-btn">
+            Build Your PC
+        </a>
+
+    </div>
+
+
+    <div
+        id="cartLayout"
+        class="cart-layout"
+        style="display:none;">
+
+        <!-- ITEMS -->
+
+        <section class="cart-box">
+
+            <div class="cart-title">
+
+                <h2>
+                    Cart Items
+                </h2>
+
+                <span id="cartCount">
+                    0 items
+                </span>
+
+            </div>
+
+            <div id="cartItems"></div>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+
+        <aside class="summary">
+
+            <h2>
+                Order Summary
+            </h2>
+
+            <div class="summary-row">
+
+                <span>
+                    Items
+                </span>
+
+                <strong id="summaryCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong id="subtotal">
+                    ₹0
+                </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <strong>
+                    FREE
+                </strong>
+
+            </div>
+
+
+            <div class="summary-total">
+
+                <span>
+                    Total
+                </span>
+
+                <span id="cartTotal">
+                    ₹0
+                </span>
+
+            </div>
+
+
+            <button
+                id="checkoutBtn"
+                class="checkout-btn">
+                Proceed to Checkout
+            </button>
+
+
+            <button
+                id="clearCart"
+                class="clear-btn">
+                Clear Cart
+            </button>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div>
+
+            <a
+                class="footer-logo"
+                href="index.html">
+
+                <img
+                    src="assets/cyberflix-logo.png"
+                    alt="Cyberflix Systems LLP">
+
+            </a>
+
+            <p>
+                Professional PC components and custom gaming builds.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="components.html">
+                Components
+            </a>
+
+            <a href="builder.html">
+                PC Builder
+            </a>
+
+            <a href="wishlist.html">
+                Wishlist
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    /* =========================================
+       CYBERFLIX CART
+       ========================================= */
+
+    const BUILD_KEY = "cyberflixBuild";
+    const CART_KEY = "cyberflixCart";
+
+
+    /* -------------------------
+       Helpers
+       ------------------------- */
+
+    function formatPrice(price) {
+
+        return "₹" + Number(price || 0)
+            .toLocaleString("en-IN");
+
+    }
+
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function getJSON(key, fallback) {
+
+        try {
+
+            const value =
+                localStorage.getItem(key);
+
+            return value
+                ? JSON.parse(value)
+                : fallback;
+
+        } catch (error) {
+
+            console.error(
+                "Storage error:",
+                error
+            );
+
+            return fallback;
+
+        }
+
+    }
+
+
+    /* -------------------------
+       Builder cart
+       ------------------------- */
+
+    function getBuilderItems() {
+
+        const build =
+            getJSON(BUILD_KEY, null);
+
+        if (!build) return [];
+
+        if (Array.isArray(build)) {
+
+            return build;
+
+        }
+
+        if (Array.isArray(build.items)) {
+
+            return build.items;
+
+        }
+
+        return [];
+
+    }
+
+
+    /* -------------------------
+       Store cart
+       ------------------------- */
+
+    function getStoreItems() {
+
+        const cart =
+            getJSON(CART_KEY, []);
+
+        if (!Array.isArray(cart)) {
+
+            return [];
+
+        }
+
+        return cart.map(item => ({
+
+            ...item,
+
+            quantity:
+                Math.max(
+                    1,
+                    Number(item.quantity || 1)
+                )
+
+        }));
+
+    }
+
+
+    /* -------------------------
+       Normalise item
+       ------------------------- */
+
+    function normaliseItem(item, source) {
+
+        return {
+
+            id:
+                item.id ||
+                item.productId ||
+                (
+                    source +
+                    "-" +
+                    Math.random()
+                        .toString(36)
+                        .slice(2)
+                ),
+
+            name:
+                item.name ||
+                item.title ||
+                "PC Component",
+
+            category:
+                item.category ||
+                item.type ||
+                "Component",
+
+            price:
+                Number(
+                    item.price ||
+                    item.unitPrice ||
+                    0
+                ),
+
+            quantity:
+                Math.max(
+                    1,
+                    Number(
+                        item.quantity ||
+                        1
+                    )
+                ),
+
+            image:
+                item.image ||
+                item.img ||
+                "",
+
+            source
+
+        };
+
+    }
+
+
+    /* -------------------------
+       Get all items
+       ------------------------- */
+
+    function getAllItems() {
+
+        const builderItems =
+            getBuilderItems()
+                .map(item =>
+                    normaliseItem(
+                        item,
+                        "builder"
+                    )
+                );
+
+
+        const storeItems =
+            getStoreItems()
+                .map(item =>
+                    normaliseItem(
+                        item,
+                        "store"
+                    )
+                );
+
+
+        return [
+            ...builderItems,
+            ...storeItems
+        ];
+
+    }
+
+
+    /* -------------------------
+       Render
+       ------------------------- */
+
+    function renderCart() {
+
+        const items =
+            getAllItems();
+
+        const empty =
+            document.getElementById(
+                "emptyCart"
+            );
+
+        const layout =
+            document.getElementById(
+                "cartLayout"
+            );
+
+        const cartItems =
+            document.getElementById(
+                "cartItems"
+            );
+
+        const cartCount =
+            document.getElementById(
+                "cartCount"
+            );
+
+        const summaryCount =
+            document.getElementById(
+                "summaryCount"
+            );
+
+        const subtotalEl =
+            document.getElementById(
+                "subtotal"
+            );
+
+        const totalEl =
+            document.getElementById(
+                "cartTotal"
+            );
+
+
+        if (!items.length) {
+
+            empty.style.display =
+                "block";
+
+            layout.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        empty.style.display =
+            "none";
+
+        layout.style.display =
+            "grid";
+
+
+        let totalQuantity = 0;
+
+        let subtotal = 0;
+
+
+        items.forEach(item => {
+
+            totalQuantity +=
+                item.quantity;
+
+            subtotal +=
+                item.price *
+                item.quantity;
+
+        });
+
+
+        cartCount.textContent =
+            totalQuantity +
+            (
+                totalQuantity === 1
+                    ? " item"
+                    : " items"
+            );
+
+
+        summaryCount.textContent =
+            totalQuantity;
+
+
+        subtotalEl.textContent =
+            formatPrice(subtotal);
+
+
+        totalEl.textContent =
+            formatPrice(subtotal);
+
+
+        cartItems.innerHTML =
+            items.map(
+                (item, index) => {
+
+                    const itemTotal =
+                        item.price *
+                        item.quantity;
+
+
+                    const image =
+                        item.image
+                            ? `
+                                <img
+                                    src="${escapeHTML(item.image)}"
+                                    alt="${escapeHTML(item.name)}"
+                                    loading="lazy"
+                                    onerror="this.style.display='none';"
+                                >
+                              `
+                            : `
+                                <span style="font-size:30px">
+                                    🖥️
+                                </span>
+                              `;
+
+
+                    return `
+
+                        <article
+                            class="cart-item">
+
+                            <div class="item-image">
+
+                                ${image}
+
+                            </div>
+
+
+                            <div>
+
+                                <div
+                                    class="item-category">
+
+                                    ${escapeHTML(
+                                        item.category
+                                    )}
+
+                                </div>
+
+
+                                <div
+                                    class="item-name">
+
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+
+                                </div>
+
+
+                                <div
+                                    class="item-price">
+
+                                    ${formatPrice(
+                                        item.price
+                                    )}
+                                    each
+
+                                </div>
+
+
+                                <div
+                                    class="quantity">
+
+                                    <button
+                                        onclick="changeQuantity(
+                                            ${index},
+                                            -1
+                                        )">
+
+                                        −
+
+                                    </button>
+
+
+                                    <span
+                                        class="quantity-value">
+
+                                        ${item.quantity}
+
+                                    </span>
+
+
+                                    <button
+                                        onclick="changeQuantity(
+                                            ${index},
+                                            1
+                                        )">
+
+                                        +
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="item-right">
+
+                                <div
+                                    class="item-total">
+
+                                    ${formatPrice(
+                                        itemTotal
+                                    )}
+
+                                </div>
+
+
+                                <button
+                                    class="remove-btn"
+                                    onclick="removeItem(
+                                        ${index}
+                                    )">
+
+                                    Remove
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    /* -------------------------
+       Change quantity
+       ------------------------- */
+
+    function changeQuantity(
+        index,
+        change
+    ) {
+
+        const items =
+            getAllItems();
+
+        const item =
+            items[index];
+
+        if (!item) return;
+
+
+        const newQuantity =
+            item.quantity +
+            change;
+
+
+        if (newQuantity <= 0) {
+
+            removeItem(index);
+
+            return;
+
+        }
+
+
+        if (item.source === "store") {
+
+            const cart =
+                getStoreItems();
+
+            const storeIndex =
+                cart.findIndex(
+                    cartItem =>
+                        String(
+                            cartItem.id
+                        ) ===
+                        String(item.id)
+                );
+
+
+            if (storeIndex !== -1) {
+
+                cart[storeIndex].quantity =
+                    newQuantity;
+
+                localStorage.setItem(
+                    CART_KEY,
+                    JSON.stringify(cart)
+                );
+
+            }
+
+        }
+
+
+        if (item.source === "builder") {
+
+            const build =
+                getJSON(
+                    BUILD_KEY,
+                    null
+                );
+
+
+            if (build) {
+
+                if (
+                    Array.isArray(
+                        build.items
+                    )
+                ) {
+
+                    build.items =
+                        build.items.map(
+                            (buildItem, i) =>
+                                i === index
+                                    ? {
+                                        ...buildItem,
+                                        quantity:
+                                            newQuantity
+                                      }
+                                    : buildItem
+                        );
+
+                }
+
+                localStorage.setItem(
+                    BUILD_KEY,
+                    JSON.stringify(build)
+                );
+
+            }
+
+        }
+
+
+        renderCart();
+
+    }
+
+
+    /* -------------------------
+       Remove item
+       ------------------------- */
+
+    function removeItem(index) {
+
+        const items =
+            getAllItems();
+
+        const item =
+            items[index];
+
+        if (!item) return;
+
+
+        if (item.source === "store") {
+
+            let cart =
+                getStoreItems();
+
+
+            cart =
+                cart.filter(
+                    cartItem =>
+                        String(
+                            cartItem.id
+                        ) !==
+                        String(item.id)
+                );
+
+
+            localStorage.setItem(
+                CART_KEY,
+                JSON.stringify(cart)
+            );
+
+        }
+
+
+        if (item.source === "builder") {
+
+            localStorage.removeItem(
+                BUILD_KEY
+            );
+
+        }
+
+
+        renderCart();
+
+    }
+
+
+    /* -------------------------
+       Clear cart
+       ------------------------- */
+
+    function clearCart() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to clear your cart?"
+            );
+
+        if (!confirmed) return;
+
+
+        localStorage.removeItem(
+            BUILD_KEY
+        );
+
+        localStorage.removeItem(
+            CART_KEY
+        );
+
+
+        renderCart();
+
+    }
+
+
+    /* -------------------------
+       Checkout
+       ------------------------- */
+
+    function goToCheckout() {
+
+        const items =
+            getAllItems();
+
+        if (!items.length) {
+
+            alert(
+                "Your cart is empty."
+            );
+
+            return;
+
+        }
+
+
+        window.location.href =
+            "checkout.html";
+
+    }
+
+
+    /* -------------------------
+       Events
+       ------------------------- */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            renderCart();
+
+
+            const clearButton =
+                document.getElementById(
+                    "clearCart"
+                );
+
+
+            if (clearButton) {
+
+                clearButton.addEventListener(
+                    "click",
+                    clearCart
+                );
+
+            }
+
+
+            const checkoutButton =
+                document.getElementById(
+                    "checkoutBtn"
+                );
+
+
+            if (checkoutButton) {
+
+                checkoutButton.addEventListener(
+                    "click",
+                    goToCheckout
+                );
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "pageshow",
+        renderCart
+    );
+
+</script>
+
+</body>
+</html>
