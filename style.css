@@ -3056,3 +3056,9 @@ section:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px
 .main-nav a.active {
     color: #08b5d9 !important;
 }
+
+/* Increase ONLY Cyberflix logo */
+.official-logo img {
+    width: 180px !important;
+    height: auto !important;
+}
